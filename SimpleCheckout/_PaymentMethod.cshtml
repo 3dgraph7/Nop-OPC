@@ -1,0 +1,59 @@
+﻿@model CheckoutPaymentMethodModel
+@using Nop.Core
+@using Nop.Services.Customers
+@inject IWebHelper webHelper
+@inject IWorkContext workContext
+@inject ICustomerService _customerService
+@{
+    var storeLocation = webHelper.GetStoreLocation();
+}
+
+<section id="opc-payment_method" class="tab-section">
+    <div class="step-title">
+        <h2 class="title">@T("Checkout.PaymentMethod")</h2>
+    </div>
+    <div id="checkout-step-payment-method" class="step a-item">
+        <form action="" id="co-payment-method-form">
+            <div id="checkout-payment-method-load">
+                @*payment methods content will be loaded here*@ Payment is not required
+                @await Html.PartialAsync("OpcPaymentMethods", Model)
+            </div>
+        </form>
+        <script asp-location="Footer">
+            var localized_data = {
+                NotAvailableMethodsError: "@T("PaymentMethod.NotAvailableMethodsError")",
+                SpecifyMethodError: "@T("PaymentMethod.SpecifyMethodError")"
+            };
+            PaymentMethod.init('#co-payment-method-form', '@(storeLocation)simplecheckout/OpcSavePaymentMethod/', localized_data);
+        </script>
+        <div class="buttons" id="payment-method-buttons-container">
+            <p class="back-link">
+                <a href="#" onclick="Checkout.back(); return false;"><small>&laquo; </small>@T("Common.Back")</a>
+            </p>
+            <button type="button" name="save" class="button-1 payment-method-next-step-button" onclick="PaymentMethod.save()">@T("Common.Continue")</button>
+            <span class="please-wait" id="payment-method-please-wait" style="display: none;">@T("Common.LoadingNextStep")</span>
+        </div>
+    </div>
+</section>
+<section id="opc-payment_info" class="tab-section">
+    <div class="step-title">
+        <h2 class="title">@T("Checkout.PaymentInfo")</h2>
+    </div>
+    <div id="checkout-step-payment-info" class="step a-item">
+        <form action="" id="co-payment-info-form">
+            <div id="checkout-payment-info-load">
+                @*payment info content will be loaded here*@ Payment is not required
+            </div>
+        </form>
+        <script asp-location="Footer">
+            PaymentInfo.init('#co-payment-info-form', '@(storeLocation)simplecheckout/OpcSavePaymentInfo/');
+        </script>
+        <div class="buttons" id="payment-info-buttons-container">
+            <p class="back-link">
+                <a href="#" onclick="Checkout.back(); return false;"><small>&laquo; </small>@T("Common.Back")</a>
+            </p>
+            <button type="button" class="button-1 payment-info-next-step-button" onclick="PaymentInfo.save()">@T("Common.Continue")</button>
+            <span class="please-wait" id="payment-info-please-wait" style="display: none;">@T("Common.LoadingNextStep")</span>
+        </div>
+    </div>
+</section>

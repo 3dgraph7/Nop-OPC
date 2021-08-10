@@ -1,0 +1,34 @@
+﻿@model OnePageCheckoutModel
+@using Nop.Core
+@using Nop.Services.Customers
+@inject IWebHelper webHelper
+@inject IWorkContext workContext
+@inject ICustomerService _customerService
+@{
+    var storeLocation = webHelper.GetStoreLocation();
+}
+
+<section id="opc-confirm_order" class="tab-section">
+    <div class="step-title">
+        <h2 class="title">@T("Checkout.ConfirmOrder")</h2>
+    </div>
+    <div id="checkout-step-confirm-order" class="step a-item">
+        <div id="checkout-confirm-order-load">
+            @*confirm order content will be loaded here*@
+            @await Html.PartialAsync("OpcConfirmOrder", Model.ConfirmOrder)
+            <div class="section order-summary">
+                @await Html.PartialAsync("_OrderSummary", Model.ShoppingCart)
+            </div>
+        </div>
+        <script asp-location="Footer">
+            ConfirmOrder.init('@(storeLocation)simplecheckout/OpcConfirmOrder/', '@Url.RouteUrl("CheckoutCompleted")');
+        </script>
+        <div class="buttons" id="confirm-order-buttons-container">
+            <p class="back-link">
+                <a href="#" onclick="Checkout.back(); return false;"><small>&laquo; </small>@T("Common.Back")</a>
+            </p>
+            <button type="button" class="button-1 confirm-order-next-step-button" onclick="ConfirmOrder.save()">@T("Common.Confirm")</button>
+            <span class="please-wait" id="confirm-order-please-wait" style="display: none;">@T("Checkout.SubmittingOrder")</span>
+        </div>
+    </div>
+</section>

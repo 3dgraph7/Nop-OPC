@@ -1,0 +1,66 @@
+﻿@model OnePageCheckoutModel
+@using Nop.Core
+@using Nop.Services.Customers
+@inject IWebHelper webHelper
+@inject IWorkContext workContext
+@inject ICustomerService _customerService
+@{
+    var storeLocation = webHelper.GetStoreLocation();
+}
+
+<section id="opc-shipping" class="tab-section">
+    <div class="step-title">
+        <h2 class="title">@T("Checkout.ShippingAddress")</h2>
+    </div>
+    <div id="checkout-step-shipping" class="step a-item">
+        <form action="" id="co-shipping-form">
+            <div id="checkout-shipping-load">
+                @*shipping address content will be loaded here*@
+                @await Html.PartialAsync("OpcShippingAddress", Model.ShippingAddress)
+            </div>
+        </form>
+        <script asp-location="Footer">
+                            Shipping.init('#co-shipping-form', '@(storeLocation)simplecheckout/OpcSaveShipping/');
+                            if ($("#shipping-address-select").length > 0) {
+                                Shipping.newAddress(!$('#shipping-address-select').val());
+                            }
+        </script>
+        <div class="buttons" id="shipping-buttons-container">
+            @if (!Model.DisableBillingAddressCheckoutStep)
+            {
+                <p class="back-link">
+                    <a href="#" onclick="Checkout.back(); return false; "><small>&laquo; </small>@T("Common.Back")</a>
+                </p>
+            }
+            <button type="button" class="button-1 new-address-next-step-button" onclick="Shipping.save()">@T("Common.Continue")</button>
+            <span id="shipping-please-wait" class="please-wait" style="display: none;"> @T("Common.LoadingNextStep")</span>
+        </div>
+    </div>
+</section>
+<section id="opc-shipping_method" class="tab-section">
+    <div class="step-title">
+        <h2 class="title">@T("Checkout.ShippingMethod")</h2>
+    </div>
+    <div id="checkout-step-shipping-method" class="step a-item">
+        <form id="co-shipping-method-form" action="">
+            <div id="checkout-shipping-method-load">
+                @*shipping methods content will be loaded here*@
+                @await Html.PartialAsync("OpcShippingMethods", Model.ShippingMethod)
+            </div>
+            <script asp-location="Footer">
+                                var localized_data = {
+                                    NotAvailableMethodsError: "@T("ShippingMethod.NotAvailableMethodsError")",
+                                    SpecifyMethodError: "@T("ShippingMethod.SpecifyMethodError")"
+                                };
+                ShippingMethod.init('#co-shipping-method-form', '@(storeLocation)simplecheckout/OpcSaveShippingMethod/', localized_data);
+            </script>
+            <div class="buttons" id="shipping-method-buttons-container">
+                <p class="back-link">
+                    <a href="#" onclick="Checkout.back(); return false;"><small>&laquo; </small>@T("Common.Back")</a>
+                </p>
+                <button type="button" class="button-1 shipping-method-next-step-button" onclick="ShippingMethod.save()">@T("Common.Continue")</button>
+                <span id="shipping-method-please-wait" class="please-wait" style="display: none;">@T("Common.LoadingNextStep")</span>
+            </div>
+        </form>
+    </div>
+</section>
